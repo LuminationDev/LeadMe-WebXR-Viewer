@@ -1,0 +1,14 @@
+{
+  "name": "leadme-webxr-player",
+  "type": "module",
+  "main": "inline-session.html",
+  "chromium-args": "--disable-raf-throttling --limit-fps=120 --remote-debugging-port=9222 --ignore-gpu-blacklist --force-gpu-mem-available-mb=14000 --enable-gpu-rasterization ",
+  "js-flags": "--expose_gc --enable-webvr --webxr --enable-gamepad-extensions --enable-gamepad-vibration --webxr-runtime=openxr --webxr-incubations --webxr-internals",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "run": "node scripts/run.js"
+  },
+  "devDependencies": {
+    "nw-builder": "^4.4.2-beta.4"
+  }
+}
