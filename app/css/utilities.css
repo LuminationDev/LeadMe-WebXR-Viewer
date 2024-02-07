@@ -1,0 +1,33 @@
+.flex {
+    display: flex;
+}
+.flex-row {
+    flex-direction: row;
+}
+.flex-col {
+    flex-direction: column;
+}
+.justify-center {
+    justify-content: center;
+}
+.items-center {
+    align-items: center;
+}
+.p-32 {
+    padding: 8rem;
+}
+.w-full {
+    width: 100%;
+}
+.w-screen {
+    width: 100vw;
+}
+.h-full {
+    height: 100%;
+}
+.h-screen {
+    height: 100vh;
+}
+.w-32 {
+    width: 8rem;
+}

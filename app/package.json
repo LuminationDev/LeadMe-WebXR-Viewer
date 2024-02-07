@@ -1,0 +1,21 @@
+{
+  "name": "leadme-webxr-player",
+  "type": "module",
+  "main": "index.html",
+  "bg-script": "js/background.js",
+  "chromium-args": "",
+  "js-flags": "--expose_gc --enable-webvr --webxr --enable-gamepad-extensions --enable-gamepad-vibration --webxr-runtime=openxr --webxr-incubations --webxr-internals",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "run-cospaces": "cd ../nwjs-sdk-v0.82.0-win-x64 && nw.exe ../app -app cospaces -code ATN-KAK",
+    "run-thinglink": "cd ../nwjs-sdk-v0.82.0-win-x64 && nw.exe ../app -app thinglink -code 1438396250608107521"
+  },
+  "devDependencies": {
+    "nw-builder": "^4.5.4"
+  },
+  "dependencies": {
+    "@luminationdev/leadmelabs-plugin-javascript": "^1.0.2",
+    "javascript-obfuscator": "^4.1.0",
+    "robotjs": "^0.6.0"
+  }
+}

@@ -2,3 +2,5 @@
 *.blend1
 build/*
 cache/*
+node_modules
+.npmrc
