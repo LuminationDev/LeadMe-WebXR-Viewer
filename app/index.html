@@ -3,20 +3,24 @@
   <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=no'>
-    <meta name='mobile-web-app-capable' content='yes'>
-    <meta name='apple-mobile-web-app-capable' content='yes'>
-    <link rel='icon' type='image/png' sizes='32x32' href='favicon-32x32.png'>
-    <link rel='icon' type='image/png' sizes='96x96' href='favicon-96x96.png'>
     <link rel='stylesheet' href='css/common.css'>
+    <link rel='stylesheet' href='css/utilities.css'>
 
-    <title>Inline Session</title>
+    <title>LeadMe WebXR Viewer</title>
   </head>
   <body style="height: 100%; width: 100%;">
-    <div id="main-body" style="width: 100%; height: 100%; background: rgb(224,221,13);background: radial-gradient(circle, rgba(224,221,13,1) 14%, rgba(219,88,21,1) 47%, rgba(206,0,255,1) 71%); display: flex; justify-content: center; align-items: center;">
-        <img id="logo" class="w-32">
+    <div id="main-body" style="width: 100%; height: 100%; background: #102A56; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <div class="flex flex-row justify-center items-center">
+            <img class="h-16 w-auto" src="assets/leadme_logo.svg">
+            <div style="color: white; font-size: 32px; margin-right: 12px; margin-left: 12px;">+</div>
+            <img id="logo" class="h-16 w-auto">
+        </div>
+        <hr style="background: #194185; height: 2px; width: 280px; border: none; margin-top: 20px; margin-bottom: 20px;"/>
+        <div>
+            <span id="loading-text" style="color: white; font-size: 32px; font-weight: 400">Connecting to headset...</span>
+        </div>
     </div>
     <script type="module">
-      import {WebXRConnectionIndicator} from './js/util/webxr-connection-indicator.js';
       import {QueryArgs} from './js/util/query-args.js';
 
       // If requested, use the polyfill to provide support for mobile devices
@@ -40,51 +44,58 @@
       }
 
       const logo = document.getElementById("logo")
-      // const myWebview = document.getElementById("my-webview")
 
       if (app === 'cospaces') {
-          logo.src = "./media/logo/cospaces.png"
+          logo.src = "assets/cospaces_logo.svg"
           // initialise cospaces
       } else if (app === 'thinglink') {
           logo.src = "./media/logo/thinglink.svg"
       } else {
-          // show not supported messages
+          document.getElementById("loading-text").innerText = "Experience type is not supported."
       }
 
-      // XR globals.
-      let xrButton = null;
+      var text = document.getElementById("loading-text")
 
-      let gl = null;
+      function updateLoadingText () {
+          if (text.innerText.startsWith("Connecting to headset")) {
+              if (text.innerText.endsWith("...")) {
+                  text.innerText = "Connecting to headset"
+              } else {
+                  text.innerText += "."
+              }
+              setTimeout(updateLoadingText, 700)
+          }
+      }
+      updateLoadingText()
 
       function initXR() {
-        xrButton = new WebXRConnectionIndicator({
-          onRequestSession: () => {},
-          onEndSession: onEndSession
-        });
-        document.querySelector('#main-body').appendChild(xrButton.domElement);
-
         if (navigator.xr) {
           launchLegacyMirror()
-
-          navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
-            xrButton.enabled = supported;
-            if (supported) {
-                setTimeout(() => {
-                    if (app && code) {
-                        if (app === 'cospaces') {
-                            window.open("https://edu.cospaces.io/" + code, "_self")
-                        } else if (app === 'thinglink') {
-                            window.open("https://www.thinglink.com/webvr/" + code, "_self")
-                        }
-                    } else {
-                        // var w = window.open("https://edu.cospaces.io/WVM-FQJ", "_self")
-                        // var w = window.open("https://www.thinglink.com/webvr/1438396250608107521", "_self")
-                        // var w = window.open("https://immersive-web.github.io/webxr-samples/inline-session.html?usePolyfill=0", "_self")
-                    }
-                }, 2000)
-            }
-          });
+          connectXR()
+        } else {
+            document.getElementById("loading-text").innerText = "XR is not supported"
         }
+      }
+
+      function connectXR() {
+          navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
+              if (supported) {
+                  document.getElementById("loading-text").innerText = "Connected. Launching your experience!"
+                  setTimeout(() => {
+                      if (app && code) {
+                          if (app === 'cospaces') {
+                              window.open("https://edu.cospaces.io/" + code, "_self")
+                          } else if (app === 'thinglink') {
+                              window.open("https://www.thinglink.com/webvr/" + code, "_self")
+                          }
+                      } else {
+                          document.getElementById("loading-text").innerText = "Launch code not provided"
+                      }
+                  }, 2000)
+              } else {
+                  setTimeout(connectXR, 2000)
+              }
+          });
       }
 
       function launchLegacyMirror() {
@@ -112,16 +123,11 @@
               });
               child2.on("exit",function(){
               });
-              child2.stdin.end(); //end input
+              child2.stdin.end();
           });
-          child.stdin.end(); //end input
+          child.stdin.end();
       }
 
-      function onEndSession(session) {
-        session.end();
-      }
-
-      // Start the XR application.
       initXR();
     </script>
   </body>

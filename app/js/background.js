@@ -1,4 +1,8 @@
 var robot = require('robotjs')
+const Sentry = require("@sentry/node");
+Sentry.init({
+    dsn: "https://14a93fe946924c759f2b63361110fae0@o1294571.ingest.sentry.io/4506713471516672",
+});
 
 function getCoordinatesOfElement(element) {
     const rect = element.getBoundingClientRect();
@@ -14,15 +18,13 @@ async function automationLoop() {
     if (win) {
         switch (win.window.location.hostname) {
             case "www.thinglink.com":
-                thinglinkLoop(win)
+                startThinglink()
                 return;
             case "edu.cospaces.io":
-                setTimeout(() => {
-                    cospacesLoop(win)
-                }, 10000)
+                startCospaces()
                 return;
             case "immersive-web.github.io":
-                webXrSampleLoop(win)
+                webXrSampleLoop()
                 return;
             default:
                 break;
@@ -41,14 +43,23 @@ function clickOnElement(element) {
     robot.mouseClick()
 }
 
+function startThinglink() {
+    let win = nw.Window.get()
+    win.document.getElementsByTagName("html")[0].style.cursor = "none"
+    thinglinkLoop()
+}
+
 async function thinglinkLoop() {
     let win = nw.Window.get()
     var els = win.window.document.getElementsByClassName("first-continue btn")
     if (els.length >= 1 && els[0].getAttribute("style").indexOf("display") === -1) {
         clickOnElement(els[0])
-        maximizeLegacyMirror()
-        win.setAlwaysOnTop(false)
-        win.minimize()
+        setTimeout(() => {
+            maximizeLegacyMirror()
+            win.setAlwaysOnTop(false)
+            win.minimize()
+            win.window.document.getElementsByTagName("html")[0].style.cursor = ""
+        }, 1000)
         win.on('close', () => {
             nw.Window.get().hide()
             closeLegacyMirror()
@@ -62,68 +73,59 @@ async function thinglinkLoop() {
 var clickedFirstCospacesButton = false;
 var clickedSecondCospacesButton = false;
 var clickedThirdCospacesButton = false;
+
+function startCospaces() {
+    let win = nw.Window.get()
+    win.window.document.getElementsByTagName("html")[0].style.cursor = "none"
+    setTimeout(() => {
+        cospacesLoop()
+    }, 1000)
+}
+
 async function cospacesLoop() {
     let win = nw.Window.get()
     const xOffset = win.x
     const yOffset = win.y
-    if (win.window.innerWidth >= 792) {
-        if (!clickedFirstCospacesButton) {
+
+    if (!clickedFirstCospacesButton) {
+        if (win.window.innerWidth >= 792) {
             robot.moveMouse((108 + ((win.window.innerWidth - 792)/2) + 16) + xOffset, (win.window.innerHeight * 0.6) + 52 + yOffset)
-            robot.mouseClick()
-            clickedFirstCospacesButton = true
-            setTimeout(cospacesLoop, 5000)
-            return;
-        }
-        if (!clickedSecondCospacesButton) {
-            robot.moveMouse(xOffset + win.window.innerWidth - 16, yOffset + win.window.innerHeight - 16)
-            robot.mouseClick()
-            clickedSecondCospacesButton = true
-            setTimeout(cospacesLoop, 5000)
-            return;
-        }
-        if (!clickedThirdCospacesButton) {
-            robot.moveMouse(xOffset + win.window.innerWidth - 58, yOffset + win.window.innerHeight - 32)
-            robot.mouseClick()
-            clickedThirdCospacesButton = true
-            maximizeLegacyMirror()
-            win.setAlwaysOnTop(false)
-            win.minimize()
-            win.on('close', () => {
-                nw.Window.get().hide()
-                closeLegacyMirror()
-                nw.Window.get().close(true)
-            })
-            return;
-        }
-    } else {
-        if (!clickedFirstCospacesButton) {
+        } else {
             robot.moveMouse(32 + xOffset, (win.window.innerHeight * 0.6) + 52 + yOffset)
-            robot.mouseClick()
-            clickedSecondCospacesButton = true
-            setTimeout(cospacesLoop, 5000)
-            return;
         }
-        if (!clickedSecondCospacesButton) {
-            robot.moveMouse(xOffset + win.window.innerWidth - 16, yOffset + win.window.innerHeight - 16)
-            robot.mouseClick()
-            clickedFirstCospacesButton = true
-            setTimeout(cospacesLoop, 5000)
-            return;
+        //the canvas adds a cursor pointer element when hovering over a button
+        var canvases = win.window.document.getElementsByTagName("canvas")
+        if (canvases.length > 0) {
+            var canvas = canvases[0]
+            if (canvas.style.cursor === "pointer") {
+                robot.mouseClick()
+                clickedFirstCospacesButton = true
+            }
         }
-        if (!clickedThirdCospacesButton) {
-            robot.moveMouse(xOffset + win.window.innerWidth - 58, yOffset + win.window.innerHeight - 32)
-            robot.mouseClick()
-            clickedThirdCospacesButton = true
-            maximizeLegacyMirror()
-            win.setAlwaysOnTop(false)
-            win.minimize()
-            win.on('close', () => {
-                nw.Window.get().hide()
-                closeLegacyMirror()
-                nw.Window.get().close(true)
-            })
-            return;
-        }
+        setTimeout(cospacesLoop, 1000)
+        return;
+    }
+    if (!clickedSecondCospacesButton) {
+        robot.moveMouse(xOffset + win.window.innerWidth - 16, yOffset + win.window.innerHeight - 16)
+        robot.mouseClick()
+        clickedSecondCospacesButton = true
+        setTimeout(cospacesLoop, 5000)
+        return;
+    }
+    if (!clickedThirdCospacesButton) {
+        robot.moveMouse(xOffset + win.window.innerWidth - 58, yOffset + win.window.innerHeight - 32)
+        robot.mouseClick()
+        clickedThirdCospacesButton = true
+        maximizeLegacyMirror()
+        win.setAlwaysOnTop(false)
+        win.minimize()
+        win.window.document.getElementsByTagName("html")[0].style.cursor = ""
+        win.on('close', () => {
+            nw.Window.get().hide()
+            closeLegacyMirror()
+            nw.Window.get().close(true)
+        })
+        return;
     }
 }
 
