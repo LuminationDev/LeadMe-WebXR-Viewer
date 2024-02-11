@@ -20,8 +20,6 @@ Use nvm to checkout to node 17.9.1 (one day we'll dockerize this 🤣)
 
 `npm install -g nw-gyp`
 
-`npm config set msvs_version 2015`
-
 Navigate to `C:\Users\{username}\.nw-gyp\0.82.0\common.gypi` and place brackets around the print statement in v8_host_byteorder
 
 `cd app/node_modules/robotjs && nw-gyp --python=C:\Python27\python.exe rebuild --target=0.82.0 --arch=x64`
