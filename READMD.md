@@ -26,8 +26,6 @@ Navigate to `C:\Users\{username}\.nw-gyp\0.82.0\common.gypi` and place brackets 
 
 `cd app/node_modules/robotjs && nw-gyp --python=C:\Python27\python.exe rebuild --target=0.82.0 --arch=x64`
 
-`cd app && npm rebuild`
-
 ### Instructions for Mac
 No
 
