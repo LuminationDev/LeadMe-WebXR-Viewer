@@ -1,8 +1,57 @@
 var robot = require('robotjs')
+const fs = require('fs')
 const Sentry = require("@sentry/node");
 Sentry.init({
     dsn: "https://14a93fe946924c759f2b63361110fae0@o1294571.ingest.sentry.io/4506713471516672",
 });
+
+function enableVrInPreferences(recursive = true) {
+    if (!fs.existsSync(process.env.LOCALAPPDATA + "\\leadme-webxr-player\\User Data\\Default\\Preferences")) {
+        if (recursive) {
+            setTimeout(() => { enableVrInPreferences(false) }, 10000) // on first init, need to wait for file creation
+        }
+        return
+    }
+    var jsonString = fs.readFileSync(process.env.LOCALAPPDATA + "\\leadme-webxr-player\\User Data\\Default\\Preferences")
+    var parsedJson = JSON.parse(jsonString)
+    if (
+        parsedJson &&
+        parsedJson.profile &&
+        parsedJson.profile.content_settings &&
+        parsedJson.profile.content_settings.exceptions
+    ) {
+        parsedJson.profile.content_settings.exceptions.vr = {
+            "https://edu.cospaces.io:443,*": {
+                "last_modified": "13350096233807062",
+                "last_visit": "13352169600000000",
+                "setting": 1
+            },
+            "https://immersive-web.github.io:443,*": {
+                "last_modified": "13351309390180728",
+                "last_visit": "13351564800000000",
+                "setting": 1
+            },
+            "https://www.thinglink.com:443,*": {
+                "last_modified": "13350095973705202",
+                "last_visit": "13352169600000000",
+                "setting": 1
+            }
+        }
+        fs.writeFileSync(
+            process.env.LOCALAPPDATA + "\\leadme-webxr-player\\User Data\\Default\\Preferences",
+            JSON.stringify(parsedJson)
+        )
+    } else {
+        if (recursive) {
+            setTimeout(() => { enableVrInPreferences(false) }, 10000) // on first init, need to wait for file creation
+        }
+    }
+}
+try {
+    enableVrInPreferences()
+} catch (e) {
+    Sentry.captureException(e)
+}
 
 function getCoordinatesOfElement(element) {
     const rect = element.getBoundingClientRect();
@@ -14,7 +63,6 @@ function getCoordinatesOfElement(element) {
 
 async function automationLoop() {
     let win = nw.Window.get()
-    console.log(win)
     if (win) {
         switch (win.window.location.hostname) {
             case "www.thinglink.com":
@@ -99,7 +147,6 @@ async function cospacesLoop() {
         var canvases = win.window.document.getElementsByTagName("canvas")
         if (canvases.length > 0) {
             var canvas = canvases[0]
-            console.log(canvas.style.cursor)
             if (canvas.style.cursor === "pointer") {
                 robot.mouseClick()
                 clickedFirstCospacesButton = true
