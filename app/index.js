@@ -26,7 +26,7 @@ if (app === 'cospaces') {
     logo.src = "assets/cospaces_logo.svg"
     // initialise cospaces
 } else if (app === 'thinglink') {
-    logo.src = "./media/logo/thinglink.svg"
+    logo.src = "assets/thinglink_logo.png"
 } else {
     document.getElementById("loading-text").innerText = "Experience type is not supported."
 }
