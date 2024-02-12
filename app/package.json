@@ -7,7 +7,7 @@
   "js-flags": "--expose_gc --enable-webvr --webxr --enable-gamepad-extensions --enable-gamepad-vibration --webxr-runtime=openxr --webxr-incubations --webxr-internals",
   "scripts": {
     "build": "node scripts/build.js && javascript-obfuscator ../build/package.nw/js/background.js --output ../build/package.nw/js/background.js --self-defending true --dead-code-injection true && javascript-obfuscator ../build/package.nw/index.js --output ../build/package.nw/index.js --self-defending true --dead-code-injection true",
-    "run-cospaces": "cd ../../nwjs-sdk-v0.82.0-win-x64 && nw.exe ../LeadMe-WebXR-Viewer/app -app cospaces -code ATN-KAK",
+    "run-cospaces": "cd ../../nwjs-sdk-v0.82.0-win-x64 && nw.exe ../LeadMe-WebXR-Viewer/app -app cospaces -code WVM-FQJ",
     "run-thinglink": "cd ../../nwjs-sdk-v0.82.0-win-x64 && nw.exe ../LeadMe-WebXR-Viewer/app -app thinglink -code 1438396250608107521"
   },
   "devDependencies": {

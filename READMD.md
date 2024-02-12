@@ -9,9 +9,6 @@ Clone .npmrc.example to app/.npmrc and put in your github token with registry re
 Ensure you have python2.7 installed
 Download and install https://aka.ms/vs/17/release/VC_redist.x64.exe
 
-Download and install https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools 
-- Select desktop development for C++ and node.js build tools
-
 Restart your PC
 
 Use nvm to checkout to node 17.9.1 (one day we'll dockerize this 🤣)

@@ -36,7 +36,7 @@ var text = document.getElementById("loading-text")
 function updateLoadingText () {
     if (text.innerText.startsWith("Connecting to headset")) {
         if (text.innerText.endsWith("...")) {
-            text.innerText = "Connecting to headset"
+            window.location.reload()
         } else {
             text.innerText += "."
         }
@@ -47,7 +47,6 @@ updateLoadingText()
 
 function initXR() {
     if (navigator.xr) {
-        launchLegacyMirror()
         connectXR()
     } else {
         document.getElementById("loading-text").innerText = "XR is not supported"
@@ -58,6 +57,7 @@ function connectXR() {
     navigator.xr.isSessionSupported('immersive-vr').then((supported) => {
         if (supported) {
             document.getElementById("loading-text").innerText = "Connected. Launching your experience!"
+            launchLegacyMirror()
             setTimeout(() => {
                 if (app && code) {
                     if (app === 'cospaces') {
@@ -69,8 +69,6 @@ function connectXR() {
                     document.getElementById("loading-text").innerText = "Launch code not provided"
                 }
             }, 2000)
-        } else {
-            setTimeout(connectXR, 2000)
         }
     });
 }

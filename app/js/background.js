@@ -45,7 +45,7 @@ function clickOnElement(element) {
 
 function startThinglink() {
     let win = nw.Window.get()
-    win.document.getElementsByTagName("html")[0].style.cursor = "none"
+    win.window.document.getElementsByTagName("html")[0].style.cursor = "none"
     thinglinkLoop()
 }
 
@@ -60,9 +60,9 @@ async function thinglinkLoop() {
             win.minimize()
             win.window.document.getElementsByTagName("html")[0].style.cursor = ""
         }, 1000)
-        win.on('close', () => {
+        win.on('close', async () => {
             nw.Window.get().hide()
-            closeLegacyMirror()
+            await closeLegacyMirror()
             nw.Window.get().close(true)
         })
         return
@@ -73,6 +73,7 @@ async function thinglinkLoop() {
 var clickedFirstCospacesButton = false;
 var clickedSecondCospacesButton = false;
 var clickedThirdCospacesButton = false;
+var loopFlip = false;
 
 function startCospaces() {
     let win = nw.Window.get()
@@ -86,17 +87,19 @@ async function cospacesLoop() {
     let win = nw.Window.get()
     const xOffset = win.x
     const yOffset = win.y
+    loopFlip = !loopFlip
 
     if (!clickedFirstCospacesButton) {
         if (win.window.innerWidth >= 792) {
-            robot.moveMouse((108 + ((win.window.innerWidth - 792)/2) + 16) + xOffset, (win.window.innerHeight * 0.6) + 52 + yOffset)
+            robot.moveMouse((108 + ((win.window.innerWidth - 792)/2) + 16) + xOffset + (loopFlip ? 1 : 0), (win.window.innerHeight * 0.6) + 52 + yOffset)
         } else {
-            robot.moveMouse(32 + xOffset, (win.window.innerHeight * 0.6) + 52 + yOffset)
+            robot.moveMouse(32 + xOffset + (loopFlip ? 1 : 0), (win.window.innerHeight * 0.6) + 52 + yOffset)
         }
         //the canvas adds a cursor pointer element when hovering over a button
         var canvases = win.window.document.getElementsByTagName("canvas")
         if (canvases.length > 0) {
             var canvas = canvases[0]
+            console.log(canvas.style.cursor)
             if (canvas.style.cursor === "pointer") {
                 robot.mouseClick()
                 clickedFirstCospacesButton = true
@@ -109,22 +112,24 @@ async function cospacesLoop() {
         robot.moveMouse(xOffset + win.window.innerWidth - 16, yOffset + win.window.innerHeight - 16)
         robot.mouseClick()
         clickedSecondCospacesButton = true
-        setTimeout(cospacesLoop, 5000)
+        setTimeout(cospacesLoop, 1000)
         return;
     }
     if (!clickedThirdCospacesButton) {
         robot.moveMouse(xOffset + win.window.innerWidth - 58, yOffset + win.window.innerHeight - 32)
         robot.mouseClick()
         clickedThirdCospacesButton = true
-        maximizeLegacyMirror()
-        win.setAlwaysOnTop(false)
-        win.minimize()
-        win.window.document.getElementsByTagName("html")[0].style.cursor = ""
-        win.on('close', () => {
-            nw.Window.get().hide()
-            closeLegacyMirror()
-            nw.Window.get().close(true)
-        })
+        setTimeout(() => {
+            maximizeLegacyMirror()
+            win.setAlwaysOnTop(false)
+            win.minimize()
+            win.window.document.getElementsByTagName("html")[0].style.cursor = ""
+            win.on('close', async () => {
+                nw.Window.get().hide()
+                await closeLegacyMirror()
+                nw.Window.get().close(true)
+            })
+        }, 500)
         return;
     }
 }
@@ -174,9 +179,33 @@ function maximizeLegacyMirror() {
     child.stdin.end(); //end input
 }
 
-function closeLegacyMirror() {
+async function closeLegacyMirror() {
+    var alreadyOpen = false;
     var spawn = require("child_process").spawn,child;
-    child = spawn("powershell.exe",["Stop-Process -Name \"vrcompositor\""]);
+    child = spawn("powershell.exe",["Get-Process | Where {$_.MainWindowTitle -eq \"Legacy Mirror\"}"]);
+    child.stdout.on("data",function(data){
+        if (data) {
+            alreadyOpen = true
+            return;
+        }
+        return;
+    });
+    child.stderr.on("data",function(data){
+    });
+    child.on("exit",function(){
+        if (!alreadyOpen) {
+            return;
+        }
+        var spawn2 = require("child_process").spawn,child2;
+        child2 = spawn2("powershell.exe",["Start-Process \"vrmonitor://debugcommands/legacy_mirror_view_toggle\""]);
+        child2.stdout.on("data",function(data){
+        });
+        child2.stderr.on("data",function(data){
+        });
+        child2.on("exit",function(){
+        });
+        child2.stdin.end();
+    });
     child.stdin.end();
 }
 
