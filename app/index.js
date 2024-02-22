@@ -1,12 +1,3 @@
-import {QueryArgs} from './js/util/query-args.js';
-
-// If requested, use the polyfill to provide support for mobile devices
-// and devices which only support WebVR.
-import WebXRPolyfill from './js/third-party/webxr-polyfill/build/webxr-polyfill.module.js';
-if (QueryArgs.getBool('usePolyfill', true)) {
-    let polyfill = new WebXRPolyfill();
-}
-
 // process command line args
 var app = null
 var code = null

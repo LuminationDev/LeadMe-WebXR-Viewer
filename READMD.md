@@ -30,6 +30,5 @@ or
 `cd app && npm run run-thinglink`
 
 ## To build
-`cd app && npm run build`
-
-The build folder will be created at top level and can be distributed
+Navigate to the root level and run build.ps1
+You can then distribute the created dist.zip
