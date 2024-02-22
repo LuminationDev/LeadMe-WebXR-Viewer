@@ -1,0 +1,13 @@
+{
+  "name": "leadme-webxr-viewer",
+  "type": "module",
+  "main": "index.html",
+  "bg-script": "js/background.js",
+  "chromium-args": "",
+  "js-flags": "--expose_gc --enable-webvr --webxr --enable-gamepad-extensions --enable-gamepad-vibration --webxr-runtime=openxr --webxr-incubations --webxr-internals",
+  "dependencies": {
+    "@luminationdev/leadmelabs-plugin-javascript": "^1.0.2",
+    "@sentry/node": "^7.100.1",
+    "robotjs": "^0.6.0"
+  }
+}
