@@ -6,5 +6,5 @@ nwbuild({
     cacheDir: "../cache",
     flavour: "sdk",
     version: "0.82.0",
-    managedManifest: { name: "leadme-webxr-player", "main": "index.html" }
+    managedManifest: { name: "leadme-webxr-viewer", "main": "index.html" }
 });

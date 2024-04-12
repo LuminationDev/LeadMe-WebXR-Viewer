@@ -6,13 +6,13 @@ Sentry.init({
 });
 
 function enableVrInPreferences(recursive = true) {
-    if (!fs.existsSync(process.env.LOCALAPPDATA + "\\leadme-webxr-player\\User Data\\Default\\Preferences")) {
+    if (!fs.existsSync(process.env.LOCALAPPDATA + "\\leadme-webxr-viewer\\User Data\\Default\\Preferences")) {
         if (recursive) {
             setTimeout(() => { enableVrInPreferences(false) }, 10000) // on first init, need to wait for file creation
         }
         return
     }
-    var jsonString = fs.readFileSync(process.env.LOCALAPPDATA + "\\leadme-webxr-player\\User Data\\Default\\Preferences")
+    var jsonString = fs.readFileSync(process.env.LOCALAPPDATA + "\\leadme-webxr-viewer\\User Data\\Default\\Preferences")
     var parsedJson = JSON.parse(jsonString)
     if (
         parsedJson &&
@@ -22,23 +22,23 @@ function enableVrInPreferences(recursive = true) {
     ) {
         parsedJson.profile.content_settings.exceptions.vr = {
             "https://edu.cospaces.io:443,*": {
-                "last_modified": "13350096233807062",
-                "last_visit": "13352169600000000",
+                "last_modified": "17125548413807062",
+                "last_visit": "17125548410000000",
                 "setting": 1
             },
             "https://immersive-web.github.io:443,*": {
-                "last_modified": "13351309390180728",
-                "last_visit": "13351564800000000",
+                "last_modified": "17125548410180728",
+                "last_visit": "17125548410000000",
                 "setting": 1
             },
             "https://www.thinglink.com:443,*": {
-                "last_modified": "13350095973705202",
-                "last_visit": "13352169600000000",
+                "last_modified": "17125548413705202",
+                "last_visit": "17125548410000000",
                 "setting": 1
             }
         }
         fs.writeFileSync(
-            process.env.LOCALAPPDATA + "\\leadme-webxr-player\\User Data\\Default\\Preferences",
+            process.env.LOCALAPPDATA + "\\leadme-webxr-viewer\\User Data\\Default\\Preferences",
             JSON.stringify(parsedJson)
         )
     } else {
