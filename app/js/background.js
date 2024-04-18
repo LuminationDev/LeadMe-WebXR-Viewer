@@ -5,6 +5,29 @@ Sentry.init({
     dsn: "https://14a93fe946924c759f2b63361110fae0@o1294571.ingest.sentry.io/4506713471516672",
 });
 
+const LeadMeLabsPlugin = require('@luminationdev/leadmelabs-plugin-javascript')
+
+const leadMeLabsConnection = new LeadMeLabsPlugin.LeadMeLabsConnection();
+
+async function shutdownApp(reason) {
+    await closeLegacyMirror()
+    leadMeLabsConnection.send("appClosed," + reason)
+    setTimeout(async () => {
+        nw.Window.get().close(true)
+        nw.App.quit()
+    }, 5000)
+}
+leadMeLabsConnection.setShutdownCallback(() => { shutdownApp("") })
+leadMeLabsConnection.connect()
+
+setTimeout(() => {
+    let win = nw.Window.get()
+    win.on('close', async () => {
+        nw.Window.get().hide()
+        shutdownApp("user closed")
+    })
+}, 2000)
+
 function enableVrInPreferences(recursive = true) {
     if (!fs.existsSync(process.env.LOCALAPPDATA + "\\leadme-webxr-viewer\\User Data\\Default\\Preferences")) {
         if (recursive) {
@@ -99,6 +122,21 @@ function startThinglink() {
 
 async function thinglinkLoop() {
     let win = nw.Window.get()
+
+    var el = win.window.document.getElementById("startBtn")
+    if (el) {
+        clickOnElement(el)
+    }
+
+    var errorCode = win.window.document.getElementsByClassName("has-error")
+    if (errorCode.length > 0) {
+        // invalid share code
+        setTimeout(async () => {
+            shutdownApp("invalid share code")
+        }, 5000)
+        return
+    }
+
     var els = win.window.document.getElementsByClassName("first-continue btn")
     if (els.length >= 1 && els[0].getAttribute("style").indexOf("display") === -1) {
         clickOnElement(els[0])
@@ -110,8 +148,7 @@ async function thinglinkLoop() {
         }, 1000)
         win.on('close', async () => {
             nw.Window.get().hide()
-            await closeLegacyMirror()
-            nw.Window.get().close(true)
+            shutdownApp("user closed")
         })
         return
     }
@@ -131,6 +168,8 @@ function startCospaces() {
     }, 1000)
 }
 
+var cospacesSecondButtonLoopCount = 0
+var cospacesFirstButtonLoopCount = 0
 async function cospacesLoop() {
     let win = nw.Window.get()
     const xOffset = win.x
@@ -138,6 +177,7 @@ async function cospacesLoop() {
     loopFlip = !loopFlip
 
     if (!clickedFirstCospacesButton) {
+        cospacesFirstButtonLoopCount++
         if (win.window.innerWidth >= 792) {
             robot.moveMouse((108 + ((win.window.innerWidth - 792)/2) + 16) + xOffset + (loopFlip ? 1 : 0), (win.window.innerHeight * 0.6) + 52 + yOffset)
         } else {
@@ -150,15 +190,28 @@ async function cospacesLoop() {
             if (canvas.style.cursor === "pointer") {
                 robot.mouseClick()
                 clickedFirstCospacesButton = true
+            } else if (cospacesFirstButtonLoopCount > 5) {
+                // the play button can't be found, it's probably an invalid share code
+                shutdownApp("invalid share code")
             }
         }
         setTimeout(cospacesLoop, 1000)
         return;
     }
     if (!clickedSecondCospacesButton) {
+        cospacesSecondButtonLoopCount++
         robot.moveMouse(xOffset + win.window.innerWidth - 16, yOffset + win.window.innerHeight - 16)
-        robot.mouseClick()
-        clickedSecondCospacesButton = true
+        var canvases = win.window.document.getElementsByTagName("canvas")
+        if (canvases.length > 0) {
+            var canvas = canvases[0]
+            if (canvas.style.cursor === "pointer") {
+                robot.mouseClick()
+                clickedSecondCospacesButton = true
+            } else if (cospacesSecondButtonLoopCount > 5) {
+                // this experience doesn't support VR, it's probably a merge cube experience
+                shutdownApp("non vr experience")
+            }
+        }
         setTimeout(cospacesLoop, 1000)
         return;
     }
@@ -173,8 +226,7 @@ async function cospacesLoop() {
             win.window.document.getElementsByTagName("html")[0].style.cursor = ""
             win.on('close', async () => {
                 nw.Window.get().hide()
-                await closeLegacyMirror()
-                nw.Window.get().close(true)
+                shutdownApp("user closed")
             })
         }, 500)
         return;

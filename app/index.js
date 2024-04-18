@@ -54,7 +54,7 @@ function connectXR() {
                     if (app === 'cospaces') {
                         window.open("https://edu.cospaces.io/" + code, "_self")
                     } else if (app === 'thinglink') {
-                        window.open("https://www.thinglink.com/webvr/" + code, "_self")
+                        window.open("https://www.thinglink.com/vr/" + code, "_self")
                     }
                 } else {
                     document.getElementById("loading-text").innerText = "Launch code not provided"

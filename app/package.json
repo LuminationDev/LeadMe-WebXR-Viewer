@@ -19,7 +19,7 @@
     "javascript-obfuscator": "^4.1.0"
   },
   "dependencies": {
-    "@luminationdev/leadmelabs-plugin-javascript": "^1.0.2",
+    "@luminationdev/leadmelabs-plugin-javascript": "^2.0.0",
     "@sentry/node": "^7.100.1",
     "robotjs": "^0.6.0"
   }
