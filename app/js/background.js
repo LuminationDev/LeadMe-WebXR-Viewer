@@ -8,17 +8,25 @@ Sentry.init({
 const LeadMeLabsPlugin = require('@luminationdev/leadmelabs-plugin-javascript')
 
 const leadMeLabsConnection = new LeadMeLabsPlugin.LeadMeLabsConnection();
-
 async function shutdownApp(reason) {
     await closeLegacyMirror()
-    leadMeLabsConnection.send("appClosed," + reason)
+    try {
+        leadMeLabsConnection.send("appClosed," + reason)
+        leadMeLabsConnection.disconnect()
+    } catch (e) {
+        Sentry.captureException(e)
+    }
     setTimeout(async () => {
         nw.Window.get().close(true)
         nw.App.quit()
     }, 5000)
 }
 leadMeLabsConnection.setShutdownCallback(() => { shutdownApp("") })
-leadMeLabsConnection.connect()
+try {
+    leadMeLabsConnection.connect()
+} catch (e) {
+    Sentry.captureException(e)
+}
 
 setTimeout(() => {
     let win = nw.Window.get()
@@ -122,6 +130,8 @@ function startThinglink() {
 
 async function thinglinkLoop() {
     let win = nw.Window.get()
+    const xOffset = win.x
+    const yOffset = win.y
 
     var el = win.window.document.getElementById("startBtn")
     if (el) {
@@ -141,11 +151,18 @@ async function thinglinkLoop() {
     if (els.length >= 1 && els[0].getAttribute("style").indexOf("display") === -1) {
         clickOnElement(els[0])
         setTimeout(() => {
+            robot.moveMouse(xOffset + 230, yOffset + 120)
+            robot.mouseToggle("down")
+        },1000)
+        setTimeout(() => {
+            robot.mouseToggle("up")
+        }, 1200)
+        setTimeout(() => {
             maximizeLegacyMirror()
             win.setAlwaysOnTop(false)
             win.minimize()
             win.window.document.getElementsByTagName("html")[0].style.cursor = ""
-        }, 1000)
+        }, 2500)
         win.on('close', async () => {
             nw.Window.get().hide()
             shutdownApp("user closed")
@@ -220,6 +237,13 @@ async function cospacesLoop() {
         robot.mouseClick()
         clickedThirdCospacesButton = true
         setTimeout(() => {
+            robot.moveMouse(xOffset + 230, yOffset + 120)
+            robot.mouseToggle("down")
+        },1000)
+        setTimeout(() => {
+            robot.mouseToggle("up")
+        }, 1200)
+        setTimeout(() => {
             maximizeLegacyMirror()
             win.setAlwaysOnTop(false)
             win.minimize()
@@ -228,7 +252,7 @@ async function cospacesLoop() {
                 nw.Window.get().hide()
                 shutdownApp("user closed")
             })
-        }, 500)
+        }, 2500)
         return;
     }
 }
