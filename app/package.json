@@ -3,6 +3,7 @@
   "type": "module",
   "main": "index.html",
   "bg-script": "js/background.js",
+  "user-agent": "WebXR Viewer",
   "chromium-args": "",
   "js-flags": "--expose_gc --enable-webvr --webxr --enable-gamepad-extensions --enable-gamepad-vibration --webxr-runtime=openxr --webxr-incubations --webxr-internals",
   "window": {

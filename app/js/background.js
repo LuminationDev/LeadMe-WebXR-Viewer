@@ -17,9 +17,8 @@ async function shutdownApp(reason) {
         Sentry.captureException(e)
     }
     setTimeout(async () => {
-        nw.Window.get().close(true)
-        nw.App.quit()
-    }, 5000)
+        nw.App.closeAllWindows()
+    }, 1000)
 }
 leadMeLabsConnection.setShutdownCallback(() => { shutdownApp("") })
 try {
@@ -33,6 +32,7 @@ setTimeout(() => {
     win.on('close', async () => {
         nw.Window.get().hide()
         shutdownApp("user closed")
+        nw.App.closeAllWindows()
     })
 }, 2000)
 
@@ -150,6 +150,8 @@ async function thinglinkLoop() {
     var els = win.window.document.getElementsByClassName("first-continue btn")
     if (els.length >= 1 && els[0].getAttribute("style").indexOf("display") === -1) {
         clickOnElement(els[0])
+
+        // accept the vr permission
         setTimeout(() => {
             robot.moveMouse(xOffset + 230, yOffset + 120)
             robot.mouseToggle("down")
@@ -207,7 +209,7 @@ async function cospacesLoop() {
             if (canvas.style.cursor === "pointer") {
                 robot.mouseClick()
                 clickedFirstCospacesButton = true
-            } else if (cospacesFirstButtonLoopCount > 5) {
+            } else if (cospacesFirstButtonLoopCount > 40) { // need a bit of time to load
                 // the play button can't be found, it's probably an invalid share code
                 shutdownApp("invalid share code")
             }
@@ -236,6 +238,8 @@ async function cospacesLoop() {
         robot.moveMouse(xOffset + win.window.innerWidth - 58, yOffset + win.window.innerHeight - 32)
         robot.mouseClick()
         clickedThirdCospacesButton = true
+
+        // accept the vr permission
         setTimeout(() => {
             robot.moveMouse(xOffset + 230, yOffset + 120)
             robot.mouseToggle("down")
@@ -243,6 +247,7 @@ async function cospacesLoop() {
         setTimeout(() => {
             robot.mouseToggle("up")
         }, 1200)
+
         setTimeout(() => {
             maximizeLegacyMirror()
             win.setAlwaysOnTop(false)
