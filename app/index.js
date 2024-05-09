@@ -64,7 +64,7 @@ function connectXR() {
                         nw.App.quit()
                     }, 5000)
                 }
-            }, 10000)
+            }, 2000)
         }
     });
 }
