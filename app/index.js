@@ -58,10 +58,45 @@ function connectXR() {
                     }
                 } else {
                     document.getElementById("loading-text").innerText = "Launch code not provided"
+                    setTimeout(() => {
+                        closeLegacyMirror()
+                        nw.App.closeAllWindows()
+                        nw.App.quit()
+                    }, 5000)
                 }
-            }, 2000)
+            }, 10000)
         }
     });
+}
+
+function closeLegacyMirror() {
+    var alreadyOpen = false;
+    var spawn = require("child_process").spawn,child;
+    child = spawn("powershell.exe",["Get-Process | Where {$_.MainWindowTitle -eq \"Legacy Mirror\"}"]);
+    child.stdout.on("data",function(data){
+        if (data) {
+            alreadyOpen = true
+            return;
+        }
+        return;
+    });
+    child.stderr.on("data",function(data){
+    });
+    child.on("exit",function(){
+        if (!alreadyOpen) {
+            return;
+        }
+        var spawn2 = require("child_process").spawn,child2;
+        child2 = spawn2("powershell.exe",["Start-Process \"vrmonitor://debugcommands/legacy_mirror_view_toggle\""]);
+        child2.stdout.on("data",function(data){
+        });
+        child2.stderr.on("data",function(data){
+        });
+        child2.on("exit",function(){
+        });
+        child2.stdin.end();
+    });
+    child.stdin.end();
 }
 
 function launchLegacyMirror() {

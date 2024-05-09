@@ -18,6 +18,7 @@ async function shutdownApp(reason) {
     }
     setTimeout(async () => {
         nw.App.closeAllWindows()
+        nw.App.quit()
     }, 1000)
 }
 leadMeLabsConnection.setShutdownCallback(() => { shutdownApp("") })
@@ -26,15 +27,6 @@ try {
 } catch (e) {
     Sentry.captureException(e)
 }
-
-setTimeout(() => {
-    let win = nw.Window.get()
-    win.on('close', async () => {
-        nw.Window.get().hide()
-        shutdownApp("user closed")
-        nw.App.closeAllWindows()
-    })
-}, 2000)
 
 function enableVrInPreferences(recursive = true) {
     if (!fs.existsSync(process.env.LOCALAPPDATA + "\\leadme-webxr-viewer\\User Data\\Default\\Preferences")) {
