@@ -52,7 +52,7 @@ jobs:
             brew install s3cmd &&
             cd ~/circleci-working/<<pipeline.id>> &&
             s3cmd --access_key=$VULTR_ACCESS --limit-rate=1024k --secret_key=$VULTR_SECRET --region=us-east-1 --host=sgp1.vultrobjects.com --host-bucket=leadme-apps.sgp1.vultrobjects.com -s del --recursive s3://leadme-apps/<<parameters.directory>>/ &&
-            s3cmd --access_key=$VULTR_ACCESS --limit-rate=8192k --secret_key=$VULTR_SECRET --region=us-east-1 --host=sgp1.vultrobjects.com --host-bucket=leadme-apps.sgp1.vultrobjects.com -s put -P ./application.zip s3://leadme-apps/<<parameters.directory>>/application.zip
+            s3cmd --access_key=$VULTR_ACCESS --limit-rate=8192k --secret_key=$VULTR_SECRET --region=us-east-1 --host=sgp1.vultrobjects.com --host-bucket=leadme-apps.sgp1.vultrobjects.com -s put -P ./application.zip s3://leadme-apps/<<parameters.directory>>/application.zip &&
             s3cmd --access_key=$VULTR_ACCESS --limit-rate=8192k --secret_key=$VULTR_SECRET --region=us-east-1 --host=sgp1.vultrobjects.com --host-bucket=leadme-apps.sgp1.vultrobjects.com -s put -P ./version s3://leadme-apps/<<parameters.directory>>/version
 
 workflows:
