@@ -1,6 +1,7 @@
 {
   "name": "leadme-webxr-viewer",
   "type": "module",
+  "version": "0.0.2",
   "main": "index.html",
   "bg-script": "js/background.js",
   "user-agent": "WebXR Viewer",
