@@ -18,6 +18,7 @@ if (Test-Path ./dist)
     Remove-Item -Recurse -Force ./dist
 }
 Copy-Item -Path ./nwjs-v0.82.0-win-x64 -Recurse -Force -Destination ./dist
+Copy-Item -Path ./leadme_config.json -Force -Destination ./dist/leadme_config.json
 Rename-Item -Path "./dist/nw.exe" -NewName "leadme-webxr-viewer.exe"
 (Get-Content ./app/package.json) -join "`n" | ConvertFrom-Json | Select-Object -ExpandProperty "version" > ./dist/version.txt
 (Get-Content ./app/package.json) -join "`n" | ConvertFrom-Json | Select-Object -ExpandProperty "version" > ./version
