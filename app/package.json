@@ -14,7 +14,8 @@
   "scripts": {
     "javascript-obfuscator": "javascript-obfuscator ../nwjs-v0.82.0-win-x64/package.nw/js/background.js --output ../nwjs-v0.82.0-win-x64/package.nw/js/background.js --self-defending true --dead-code-injection true && javascript-obfuscator ../nwjs-v0.82.0-win-x64/package.nw/index.js --output ../nwjs-v0.82.0-win-x64/package.nw/index.js --self-defending true --dead-code-injection true",
     "run-cospaces": "cd ../../nwjs-sdk-v0.82.0-win-x64 && nw.exe ../LeadMe-WebXR-Viewer/app -app cospaces -code WVM-FQJ",
-    "run-thinglink": "cd ../../nwjs-sdk-v0.82.0-win-x64 && nw.exe ../LeadMe-WebXR-Viewer/app -app thinglink -code pjgKmE"
+    "run-thinglink": "cd ../../nwjs-sdk-v0.82.0-win-x64 && nw.exe ../LeadMe-WebXR-Viewer/app -app thinglink -code pjgKmE",
+    "run-url": "cd ../../nwjs-sdk-v0.82.0-win-x64 && nw.exe ../LeadMe-WebXR-Viewer/app -url"
   },
   "devDependencies": {
     "nw-builder": "^4.5.4",

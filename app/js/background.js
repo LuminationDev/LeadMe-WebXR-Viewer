@@ -94,9 +94,6 @@ async function automationLoop() {
             case "edu.cospaces.io":
                 startCospaces()
                 return;
-            case "immersive-web.github.io":
-                webXrSampleLoop()
-                return;
             default:
                 break;
         }

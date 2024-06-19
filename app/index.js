@@ -1,6 +1,7 @@
 // process command line args
 var app = null
 var code = null
+var url = false
 const args = nw.App.argv
 for (var i = 0; i < args.length; i++) {
     if (args[i] === "-app" && args.length >= i) {
@@ -9,15 +10,25 @@ for (var i = 0; i < args.length; i++) {
     if (args[i] === "-code" && args.length >= i) {
         code = args[i + 1]
     }
+    if (args[i] === "-url") {
+        url = true
+    }
 }
 
 const logo = document.getElementById("logo")
+const plus = document.getElementById("plus")
+const urlEntry = document.getElementById("url-entry")
+const urlInput = document.getElementById("url")
+const submitUrl = document.getElementById("submit-url")
+const errorText = document.getElementById("error-text")
 
 if (app === 'cospaces') {
     logo.src = "assets/cospaces_logo.svg"
     // initialise cospaces
 } else if (app === 'thinglink') {
     logo.src = "assets/thinglink_logo.png"
+} else if (url) {
+    plus.style = "visibility: hidden;"
 } else {
     document.getElementById("loading-text").innerText = "Experience type is not supported."
 }
@@ -55,6 +66,15 @@ function connectXR() {
                         window.open("https://edu.cospaces.io/" + code, "_self")
                     } else if (app === 'thinglink') {
                         window.open("https://www.thinglink.com/vr/" + code, "_self")
+                    }
+                } else if (url) {
+                    urlEntry.style = ""
+                    submitUrl.onclick = () => {
+                        if (urlInput.value.match(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)) {
+                            window.open(urlInput.value, "_self")
+                        } else {
+                            errorText.style = "color: #850000;"
+                        }
                     }
                 } else {
                     document.getElementById("loading-text").innerText = "Launch code not provided"
