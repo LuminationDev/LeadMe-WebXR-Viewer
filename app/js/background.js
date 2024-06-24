@@ -89,9 +89,11 @@ async function automationLoop() {
     if (win) {
         switch (win.window.location.hostname) {
             case "www.thinglink.com":
+                win.setAlwaysOnTop(true)
                 startThinglink()
                 return;
             case "edu.cospaces.io":
+                win.setAlwaysOnTop(true)
                 startCospaces()
                 return;
             default:
@@ -329,4 +331,3 @@ async function closeLegacyMirror() {
 setTimeout(automationLoop, 2000)
 let win = nw.Window.get()
 win.maximize()
-win.setAlwaysOnTop(true)

@@ -6,8 +6,8 @@
     "defines": [],
     "include_dirs": [],
     "libraries": [],
-    "msbuild_toolset": "v142",
-    "msvs_windows_target_platform_version": "10.0.19041.0"
+    "msbuild_toolset": "v143",
+    "msvs_windows_target_platform_version": "10.0.22621.0"
   },
   "variables": {
     "asan": 0,
@@ -362,7 +362,7 @@
     "nodedir": "C:\\Users\\dkear\\AppData\\Local\\node-gyp\\Cache\\17.9.1",
     "python": "C:\\Python312\\python.exe",
     "standalone_static_library": 1,
-    "msbuild_path": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\MSBuild\\Current\\Bin\\MSBuild.exe",
+    "msbuild_path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Professional\\MSBuild\\Current\\Bin\\MSBuild.exe",
     "cache": "C:\\Users\\dkear\\AppData\\Local\\npm-cache",
     "globalconfig": "C:\\Program Files\\nodejs\\etc\\npmrc",
     "global_prefix": "C:\\Program Files\\nodejs",

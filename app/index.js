@@ -16,6 +16,7 @@ for (var i = 0; i < args.length; i++) {
 }
 
 const logo = document.getElementById("logo")
+const leadmeLogo = document.getElementById("leadme-logo")
 const plus = document.getElementById("plus")
 const urlEntry = document.getElementById("url-entry")
 const urlInput = document.getElementById("url")
@@ -28,6 +29,7 @@ if (app === 'cospaces') {
 } else if (app === 'thinglink') {
     logo.src = "assets/thinglink_logo.png"
 } else if (url) {
+    leadmeLogo.src = "assets/leadme_logo_full.svg"
     plus.style = "visibility: hidden;"
 } else {
     document.getElementById("loading-text").innerText = "Experience type is not supported."
@@ -69,11 +71,12 @@ function connectXR() {
                     }
                 } else if (url) {
                     urlEntry.style = ""
+                    document.getElementById("loading-text").style = "visibility: hidden;"
                     submitUrl.onclick = () => {
                         if (urlInput.value.match(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)) {
                             window.open(urlInput.value, "_self")
                         } else {
-                            errorText.style = "color: #850000;"
+                            errorText.style = "color: #850000; margin: 10px 0px;"
                         }
                     }
                 } else {
