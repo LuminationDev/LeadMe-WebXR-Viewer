@@ -73,8 +73,12 @@ function connectXR() {
                     urlEntry.style = ""
                     document.getElementById("loading-text").style = "visibility: hidden;"
                     submitUrl.onclick = () => {
-                        if (urlInput.value.match(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)) {
-                            window.open(urlInput.value, "_self")
+                        var url = urlInput.value
+                        if (!url.startsWith("http")) {
+                            url = "https://" + url;
+                        }
+                        if (url.match(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)) {
+                            window.open(url, "_self")
                         } else {
                             errorText.style = "color: #850000; margin: 10px 0px;"
                         }

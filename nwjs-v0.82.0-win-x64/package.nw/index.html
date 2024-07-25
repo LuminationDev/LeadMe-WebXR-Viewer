@@ -13,14 +13,35 @@
   <body style="height: 100%; width: 100%;">
     <div id="main-body" style="width: 100%; height: 100%; background: #102A56; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <div class="flex flex-row justify-center items-center">
-            <img class="h-12 w-auto" src="assets/leadme_logo.svg">
-            <div style="color: white; font-size: 32px; margin-right: 12px; margin-left: 12px;">+</div>
+            <img id="leadme-logo" class="h-12 w-auto" src="assets/leadme_logo.svg">
+            <div id="plus" style="color: white; font-size: 32px; margin-right: 12px; margin-left: 12px;">+</div>
             <img id="logo" class="h-12 w-auto">
         </div>
         <hr style="background: #194185; height: 2px; width: 280px; border: none; margin-top: 20px; margin-bottom: 20px;"/>
         <div>
             <span id="loading-text" style="color: white; font-size: 32px; font-weight: 400">Connecting to headset</span>
         </div>
+        <div id="url-entry" class="flex flex-col justify-center items-center" style="visibility: hidden">
+            <input
+                    id="url"
+                    type="url"
+                    placeholder="Please enter a url..."
+                    style="background: #ffffff;padding: 10px;border-radius: 5px; border: 1px gray solid;
+                        width: 350px; font-size: 16px; margin-top: 20px;"/>
+            <div id="error-text" style="color: #850000; visibility: hidden;">Not a valid URL</div>
+            <button id="submit-url"
+                style=" font-weight: 400; padding: 10px; width: 150px; font-size: 16px;
+                    color: white; border-radius: 5px; border-style: none; cursor: pointer;" class="hover-button">Launch URL</button>
+        </div>
     </div>
   </body>
 </html>
+
+<style>
+    .hover-button {
+        background-color: #1570EF;
+    }
+    .hover-button:hover {
+        background-color: #175CD3;
+    }
+</style>
