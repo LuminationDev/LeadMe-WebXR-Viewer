@@ -1,0 +1,29 @@
+{
+  "name": "leadme-webxr-viewer",
+  "type": "module",
+  "version": "0.0.4",
+  "main": "index.html",
+  "bg-script": "js/background.js",
+  "user-agent": "WebXR Viewer",
+  "chromium-args": "",
+  "js-flags": "--expose_gc --enable-webvr --webxr --enable-gamepad-extensions --enable-gamepad-vibration --webxr-runtime=openxr --webxr-incubations --webxr-internals",
+  "window": {
+    "icon": "package.nw/assets/icon.png",
+    "title": "LeadMe WebXR Viewer"
+  },
+  "scripts": {
+    "javascript-obfuscator": "javascript-obfuscator ../nwjs-v0.82.0-win-x64/package.nw/js/background.js --output ../nwjs-v0.82.0-win-x64/package.nw/js/background.js --self-defending true --dead-code-injection true && javascript-obfuscator ../nwjs-v0.82.0-win-x64/package.nw/index.js --output ../nwjs-v0.82.0-win-x64/package.nw/index.js --self-defending true --dead-code-injection true",
+    "run-cospaces": "cd ../../nwjs-sdk-v0.82.0-win-x64 && nw.exe ../LeadMe-WebXR-Viewer/app -app cospaces -code WVM-FQJ",
+    "run-thinglink": "cd ../../nwjs-sdk-v0.82.0-win-x64 && nw.exe ../LeadMe-WebXR-Viewer/app -app thinglink -code pjgKmE",
+    "run-url": "cd ../../nwjs-sdk-v0.82.0-win-x64 && nw.exe ../LeadMe-WebXR-Viewer/app -url"
+  },
+  "devDependencies": {
+    "nw-builder": "^4.5.4",
+    "javascript-obfuscator": "^4.1.0"
+  },
+  "dependencies": {
+    "@luminationdev/leadmelabs-plugin-javascript": "^2.0.1",
+    "@sentry/node": "^7.100.1",
+    "robotjs": "^0.6.0"
+  }
+}

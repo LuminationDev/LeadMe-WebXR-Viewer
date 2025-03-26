@@ -1,0 +1,28 @@
+[
+  {
+    "name": "CoSpaces",
+    "exeName": "leadme-webxr-viewer.exe",
+    "parameters": "-app cospaces -code",
+    "isVr": true,
+    "subtype": {
+      "category": "shareCode"
+    },
+    "headerFolder": "cospaces"
+  },
+  {
+    "name": "ThingLink",
+    "exeName": "leadme-webxr-viewer.exe",
+    "parameters": "-app thinglink -code",
+    "isVr": true,
+    "subtype": {
+      "category": "shareCode"
+    },
+    "headerFolder": "thinglink"
+  },
+  {
+    "name": "WebXR Viewer",
+    "exeName": "leadme-webxr-viewer.exe",
+    "parameters": "-url",
+    "isVr": true
+  }
+]

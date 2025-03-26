@@ -1,0 +1,76 @@
+version: 2.1
+
+orbs:
+  windows: circleci/windows@5.0.0
+
+commands:
+  sign:
+    steps:
+      - checkout:
+            path: ~/circleci-working/<<pipeline.id>>
+      - run:
+          name: "Sign leadme-webxr-viewer.exe"
+          command: |
+            cd ~/circleci-working/<<pipeline.id>>/dist/
+            signtool.exe sign /fd sha256 /tr http://ts.ssl.com /td sha256 /n "Technology for Education Solutions Pty. Ltd." ".\leadme-webxr-viewer.exe"
+          shell: powershell.exe
+      - run:
+          name: Compress built files to application.zip
+          command: cd <<pipeline.id>>; Compress-Archive -Path ~/circleci-working/<<pipeline.id>>/dist/* -DestinationPath ~/circleci-working/<<pipeline.id>>/application.zip
+          shell: powershell.exe
+      - store_artifacts:
+          path: ~/circleci-working/<<pipeline.id>>/application.zip
+      - store_artifacts:
+          path: ~/circleci-working/<<pipeline.id>>/version.txt
+      - persist_to_workspace:
+          root: ~/circleci-working/<<pipeline.id>>
+          paths:
+            - application.zip
+            - version.txt
+
+jobs:
+  sign:
+    machine: true
+    resource_class: luminationdev/darragh-comp
+    executor:
+      name: windows/default
+    steps:
+      - attach_workspace:
+          at: ~/circleci-working/<<pipeline.id>>
+      - sign
+  vultr-upload:
+    docker:
+      - image: cimg/node:current
+    parameters:
+      directory:
+        type: string
+    steps:
+      - attach_workspace:
+          at: ~/circleci-working/<<pipeline.id>>
+      - run:
+          name: "install brew and upload"
+          command: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" &&
+            (echo; echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"') >> /home/circleci/.profile && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" &&
+            brew install s3cmd &&
+            cd ~/circleci-working/<<pipeline.id>> &&
+            s3cmd --access_key=$VULTR_ACCESS --limit-rate=1024k --secret_key=$VULTR_SECRET --region=us-east-1 --host=sgp1.vultrobjects.com --host-bucket=leadme-apps.sgp1.vultrobjects.com -s del --recursive s3://leadme-apps/<<parameters.directory>>/ &&
+            s3cmd --access_key=$VULTR_ACCESS --limit-rate=8192k --secret_key=$VULTR_SECRET --region=us-east-1 --host=sgp1.vultrobjects.com --host-bucket=leadme-apps.sgp1.vultrobjects.com -s put -P ./application.zip s3://leadme-apps/<<parameters.directory>>/application.zip &&
+            s3cmd --access_key=$VULTR_ACCESS --limit-rate=8192k --secret_key=$VULTR_SECRET --region=us-east-1 --host=sgp1.vultrobjects.com --host-bucket=leadme-apps.sgp1.vultrobjects.com -s put -P ./version.txt s3://leadme-apps/<<parameters.directory>>/version
+
+workflows:
+  build_release:
+    jobs:
+      - hold:
+          context: LeadMeDeployers
+          type: approval
+          filters:
+            branches:
+              only:
+                - main
+      - sign:
+          requires:
+            - hold
+      - vultr-upload:
+          requires:
+            - sign
+          directory: "leadme-webxr-viewer"

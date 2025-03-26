@@ -1,0 +1,7 @@
+
+*.blend1
+build/*
+cache/*
+app/node_modules
+.npmrc
+nwjs-sdk-v0.82.0-win-x64
